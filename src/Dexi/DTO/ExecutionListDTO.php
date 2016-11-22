@@ -15,7 +15,7 @@ class ExecutionListDTO {
     public $totalRows;
 
     /**
-     * @var CloudScrapeExecutionDTO[]
+     * @var ExecutionDTO[]
      */
     public $rows;
 }
