@@ -8,9 +8,15 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "CloudScrape",
-            "email": "support@cloudscrape.com",
-            "homepage": "http://cloudscrape.com",
+            "name": "Henrik Hofmeister",
+            "email": "support@dexi.com",
+            "homepage": "https://dexi.io",
+            "role": "Developer"
+        },
+        {
+            "name": "Andrés Angulo",
+            "email": "andres@dexi.com",
+            "homepage": "https://dexi.io",
             "role": "Developer"
         }
     ],
