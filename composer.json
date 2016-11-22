@@ -3,19 +3,19 @@
     "version": "1.0.0",
     "type": "library",
     "description": "Dexi API Client for PHP 5.3+",
-    "keywords": ["cloudscrape","scraping"],
-    "homepage": "http://cloudscrape.com",
+    "keywords": ["dexi","crawling","scraping","extracting","cloudscrape"],
+    "homepage": "http://dexi.io",
     "license": "MIT",
     "authors": [
         {
             "name": "Henrik Hofmeister",
-            "email": "support@dexi.com",
+            "email": "support@dexi.io",
             "homepage": "https://dexi.io",
             "role": "Developer"
         },
         {
             "name": "Andrés Angulo",
-            "email": "andres@dexi.com",
+            "email": "andres@dexi.io",
             "homepage": "https://dexi.io",
             "role": "Developer"
         }
