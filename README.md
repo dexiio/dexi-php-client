@@ -40,6 +40,7 @@ The following API namespaces are contained in the global ```Dexi\Dexi``` class:
 
 ```\Dexi\Dexi::executions()```
 ```\Dexi\Dexi::runs()```
+```\Dexi\Dexi::robots()```
 
 These namespaces contain the methods displayed in the API documentation. Models are defined in the ```\Dexi\DTO\``` namespace.
 
@@ -61,11 +62,15 @@ names and signatures have remained the same but we have added PSR-4 namespacing 
 |CloudScrapeClient|\Dexi\Client|
 |CloudScrapeExecutions|\Dexi\Executions|
 |CloudScrapeRuns|\Dexi\Runs|
+||\Dexi\Robots|
 |CloudScrapeRunDTO|\Dexi\DTO\RunDTO|
+||\Dexi\DTO\RunListDTO|
 |CloudScrapeResultDTO|\Dexi\DTO\ResultDTO|
 |CloudScrapeFileDTO|\Dexi\DTO\FileDTO|
 |CloudScrapeExecutionDTO|\Dexi\DTO\ExecutionDTO|
 |CloudScrapeExecutionListDTO|\Dexi\DTO\ExecutionListDTO|
+||\Dexi\DTO\StatsDTO|
+||\Dexi\DTO\RobotDTO|
 |CloudScrapeRequestException|\Dexi\Exception\RequestException|
 
 ## Contributing
