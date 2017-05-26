@@ -77,3 +77,6 @@ names and signatures have remained the same but we have added PSR-4 namespacing 
 Please submit bug reports, suggestions and pull requests to [through Github](https://github.com/dexiio/dexi-php-client/issues).
 
 We are more than happy to examine any pull-requests and appreciate any ideas, comments or suggestions you may have.
+
+## Contributing
+The library is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
