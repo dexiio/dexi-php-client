@@ -27,8 +27,7 @@ class Runs {
      * @return RunDTO
      */
     public function create($run, $robotId = null) {
-        $query = ($robotId != null ? "?robotId=$robotId" : "");
-        return $this->client->requestJson("runs/save$query", 'POST', $run);
+        return $this->client->requestJson("runs?robotId=$robotId", 'POST', $run);
     }
 
     /**
@@ -39,8 +38,7 @@ class Runs {
      * @return RunDTO
      */
     public function update($run, $robotId = null) {
-        $query = ($robotId != null ? "?robotId=$robotId" : "");
-        return $this->client->requestJson("runs/save$query", 'PUT', $run);
+        return $this->client->requestJson("runs?robotId=$robotId", 'PUT', $run);
     }
 
     /**

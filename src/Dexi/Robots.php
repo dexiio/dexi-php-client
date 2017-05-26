@@ -26,7 +26,7 @@ class Robots {
      * @return RobotDTO
      */
     public function create($robot) {
-        return $this->client->requestJson("robots/save", 'POST', $robot);
+        return $this->client->requestJson("robots", 'POST', $robot);
     }
 
     /**
@@ -46,7 +46,7 @@ class Robots {
      * @return RobotDTO
      */
     public function update($robot) {
-        return $this->client->requestJson("robots/save", 'POST', $robot);
+        return $this->client->requestJson("robots", 'PUT', $robot);
     }
 
     /**
