@@ -53,8 +53,9 @@ Packagist:
 [cloudscrape/cloudscrape-api-client](https://packagist.org/packages/cloudscrape/cloudscrape-api-client) is now **[dexiio/dexi-api-client](https://packagist.org/packages/dexiio/dexi-api-client)**
 
 If you are currently using cloudscrape-client-php, we strongly suggest you upgrade
-to this library as cloudscrape-client-php has been deprecated and will no longer be developed, and may not be supported in the future. The method
-names and signatures have remained the same but we have added PSR-4 namespacing and rebranded to the Dexi name, as well as moving to support PHP7.
+to this library as cloudscrape-client-php has been deprecated and will no longer be developed, and may not be supported in the future. Most method
+signatures have changed and we have added PSR-4 namespacing and rebranding to the Dexi name, as well as moving to support PHP7. New classes and methods
+have also been added.
 
 |Old class|New class|
 |---------|---------|
