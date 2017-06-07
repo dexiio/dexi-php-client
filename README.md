@@ -40,6 +40,7 @@ The following API namespaces are contained in the global ```Dexi\Dexi``` class:
 
 ```\Dexi\Dexi::executions()```
 ```\Dexi\Dexi::runs()```
+```\Dexi\Dexi::robots()```
 
 These namespaces contain the methods displayed in the API documentation. Models are defined in the ```\Dexi\DTO\``` namespace.
 
@@ -61,14 +62,21 @@ names and signatures have remained the same but we have added PSR-4 namespacing 
 |CloudScrapeClient|\Dexi\Client|
 |CloudScrapeExecutions|\Dexi\Executions|
 |CloudScrapeRuns|\Dexi\Runs|
+||\Dexi\Robots|
 |CloudScrapeRunDTO|\Dexi\DTO\RunDTO|
+||\Dexi\DTO\RunListDTO|
 |CloudScrapeResultDTO|\Dexi\DTO\ResultDTO|
 |CloudScrapeFileDTO|\Dexi\DTO\FileDTO|
 |CloudScrapeExecutionDTO|\Dexi\DTO\ExecutionDTO|
 |CloudScrapeExecutionListDTO|\Dexi\DTO\ExecutionListDTO|
+||\Dexi\DTO\StatsDTO|
+||\Dexi\DTO\RobotDTO|
 |CloudScrapeRequestException|\Dexi\Exception\RequestException|
 
 ## Contributing
 Please submit bug reports, suggestions and pull requests to [through Github](https://github.com/dexiio/dexi-php-client/issues).
 
 We are more than happy to examine any pull-requests and appreciate any ideas, comments or suggestions you may have.
+
+## Contributing
+The library is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).

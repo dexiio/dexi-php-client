@@ -31,14 +31,14 @@ class Client {
 
         $this->executions = new Executions($this);
         $this->runs = new Runs($this);
+        $this->robots = new Robots($this);
     }
 
     /**
      * Get current request timeout
      * @return int
      */
-    public function getRequestTimeout()
-    {
+    public function getRequestTimeout() {
         return $this->requestTimeout;
     }
 
@@ -49,8 +49,7 @@ class Client {
      *
      * @param int $requestTimeout
      */
-    public function setRequestTimeout($requestTimeout)
-    {
+    public function setRequestTimeout($requestTimeout) {
         $this->requestTimeout = $requestTimeout;
     }
 
@@ -60,8 +59,7 @@ class Client {
      * Get endpoint / base url of requests
      * @return string
      */
-    public function getEndPoint()
-    {
+    public function getEndPoint() {
         return $this->endPoint;
     }
 
@@ -69,8 +67,7 @@ class Client {
      * Set end point / base url of requests
      * @param string $endPoint
      */
-    public function setEndPoint($endPoint)
-    {
+    public function setEndPoint($endPoint) {
         $this->endPoint = $endPoint;
     }
 
@@ -78,8 +75,7 @@ class Client {
      * Get user agent of requests
      * @return string
      */
-    public function getUserAgent()
-    {
+    public function getUserAgent() {
         return $this->userAgent;
     }
 
@@ -87,8 +83,7 @@ class Client {
      * Set user agent of requests
      * @param string $userAgent
      */
-    public function setUserAgent($userAgent)
-    {
+    public function setUserAgent($userAgent) {
         $this->userAgent = $userAgent;
     }
 
@@ -209,6 +204,14 @@ class Client {
      */
     public function runs() {
         return $this->runs;
+    }
+
+    /**
+     * Interact with robots
+     * @return Robots
+     */
+    public function robots() {
+        return $this->robots;
     }
 
 }
