@@ -32,7 +32,7 @@ var_dump($newExecution);
 ```
 
 ## Documentation
-See [the API documentation](https://app.dexi.com/#/api) for details on all namespaces, methods and models. The global API object must be initialized in order to be used:
+See [the API documentation](https://app.dexi.io/#/api) for details on all namespaces, methods and models. The global API object must be initialized in order to be used:
 
 ```\Dexi\Dexi::init(<your api key>, <your account id>);```
 
