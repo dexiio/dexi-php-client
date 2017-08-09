@@ -6,7 +6,7 @@ use Dexi\Exception\RequestException;
 
 class Client {
 
-    private $endPoint = 'https://app.dexi.io/api/';
+    private $endPoint = 'https://api.dexi.io/';
     private $userAgent = 'CS-PHP-CLIENT/1.0';
     private $apiKey;
     private $accountId;
@@ -101,8 +101,8 @@ class Client {
         $content = $body ? json_encode($body) : null;
 
         $headers = array();
-        $headers[] = "X-CloudScrape-Access: $this->accessKey";
-        $headers[] = "X-CloudScrape-Account: $this->accountId";
+        $headers[] = "X-DexiIO-Access: $this->accessKey";
+        $headers[] = "X-DexiIO-Account: $this->accountId";
         $headers[] = "User-Agent: $this->userAgent";
         $headers[] = "Accept: application/json";
         $headers[] = "Content-Type: application/json";
@@ -111,19 +111,7 @@ class Client {
             $headers[] = "Content-Length: " . strlen($content);
         }
 
-        $requestDetails = array(
-            'method' => $method,
-            'header' => join("\r\n",$headers),
-            'content' => $content,
-            'timeout' => $this->requestTimeout
-        );
-
-        $context  = stream_context_create(array(
-            'https' => $requestDetails,
-            'http' => $requestDetails
-        ));
-
-        $outRaw = @file_get_contents($this->endPoint . $url, false, $context);
+        $outRaw = $this->executeCurlRequest($this->endPoint . $url, $content, $headers, $method == 'POST');
 
         $out = $this->parseHeaders($http_response_header);
 
@@ -214,4 +202,24 @@ class Client {
         return $this->robots;
     }
 
+    /**
+     * @param      $url
+     * @param      $body
+     * @param      $headers
+     * @param bool $post
+     * @return mixed
+     */
+    private function executeCurlRequest($url, $body, $headers, $post = true) {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL,$url);
+        curl_setopt($ch, CURLOPT_POST, $post);
+        curl_setopt($ch,CURLOPT_POSTFIELDS, $body);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch,CURLOPT_TIMEOUT,$this->requestTimeout);
+
+        $result = curl_exec($ch);
+        curl_close($ch);
+
+        return $result;
+    }
 }
