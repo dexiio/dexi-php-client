@@ -6,12 +6,34 @@ use Dexi\Exception\RequestException;
 
 class Client {
 
+    /**
+     * @var string
+     */
     private $endPoint = 'https://api.dexi.io/';
+
+    /**
+     * @var string
+     */
     private $userAgent = 'CS-PHP-CLIENT/1.0';
+
+    /**
+     * @var string
+     */
     private $apiKey;
+
+    /**
+     * @var string
+     */
     private $accountId;
+
+    /**
+     * @var string
+     */
     private $accessKey;
 
+    /**
+     * @var int
+     */
     private $requestTimeout = 3600;
 
     /**
@@ -24,6 +46,12 @@ class Client {
      */
     private $runs;
 
+    /**
+     * Client constructor
+     *
+     * @param string $apiKey
+     * @param string $accountId
+     */
     function __construct($apiKey, $accountId) {
         $this->apiKey = $apiKey;
         $this->accountId = $accountId;
@@ -36,6 +64,7 @@ class Client {
 
     /**
      * Get current request timeout
+     *
      * @return int
      */
     public function getRequestTimeout() {
@@ -57,6 +86,7 @@ class Client {
 
     /**
      * Get endpoint / base url of requests
+     *
      * @return string
      */
     public function getEndPoint() {
@@ -65,6 +95,7 @@ class Client {
 
     /**
      * Set end point / base url of requests
+     *
      * @param string $endPoint
      */
     public function setEndPoint($endPoint) {
@@ -73,6 +104,7 @@ class Client {
 
     /**
      * Get user agent of requests
+     *
      * @return string
      */
     public function getUserAgent() {
@@ -81,6 +113,7 @@ class Client {
 
     /**
      * Set user agent of requests
+     *
      * @param string $userAgent
      */
     public function setUserAgent($userAgent) {
@@ -89,8 +122,8 @@ class Client {
 
 
     /**
-     *
      * Make a call to the CloudScrape API
+     *
      * @param string $url
      * @param string $method
      * @param mixed $body Will be converted into json
@@ -111,7 +144,7 @@ class Client {
             $headers[] = "Content-Length: " . strlen($content);
         }
 
-        $outRaw = $this->executeCurlRequest($this->endPoint . $url, $content, $headers, $method == 'POST');
+        $outRaw = $this->executeCurlRequest($this->endPoint . $url, $headers, $content, $method);
 
         $out = $this->parseHeaders($http_response_header);
 
@@ -148,6 +181,10 @@ class Client {
         return true;
     }
 
+    /**
+     * @param string[] $http_response_header
+     * @return object
+     */
     private function parseHeaders($http_response_header) {
         $status = 0;
         $reason = '';
@@ -171,7 +208,7 @@ class Client {
             }
         }
 
-        return (object)array(
+        return (object) array(
             'statusCode' => $status,
             'reason' => $reason,
             'headers' => $outHeaders
@@ -179,7 +216,8 @@ class Client {
     }
 
     /**
-     * Interact with executions.
+     * Interact with executions
+     *
      * @return Executions
      */
     public function executions() {
@@ -188,6 +226,7 @@ class Client {
 
     /**
      * Interact with runs
+     *
      * @return Runs
      */
     public function runs() {
@@ -196,6 +235,7 @@ class Client {
 
     /**
      * Interact with robots
+     *
      * @return Robots
      */
     public function robots() {
@@ -203,19 +243,27 @@ class Client {
     }
 
     /**
-     * @param      $url
-     * @param      $body
-     * @param      $headers
-     * @param bool $post
+     * @param string $url
+     * @param string[] $headers
+     * @param string $body
+     * @param string $method
      * @return mixed
      */
-    private function executeCurlRequest($url, $body, $headers, $post = true) {
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL,$url);
-        curl_setopt($ch, CURLOPT_POST, $post);
-        curl_setopt($ch,CURLOPT_POSTFIELDS, $body);
+    private function executeCurlRequest($url, $headers, $body = '', $method = 'GET') {
+        $ch = curl_init($url);
+
+        switch (strtoupper($method)) {
+            case 'POST':
+            case 'PUT':
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
+                break;
+        }
+
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch,CURLOPT_TIMEOUT,$this->requestTimeout);
+        curl_setopt($ch, CURLOPT_TIMEOUT, $this->requestTimeout);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
         $result = curl_exec($ch);
         curl_close($ch);
