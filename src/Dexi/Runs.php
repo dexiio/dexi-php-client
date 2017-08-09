@@ -88,7 +88,7 @@ class Runs {
 
     /**
      * Start new execution of the run, and wait for it to finish before returning the result.
-     * The execution and result will be automatically deleted from CloudScrape completion
+     * The execution and result will be automatically deleted from Dexi completion
      * - both successful and failed.
      *
      * @param string $runId
@@ -104,7 +104,7 @@ class Runs {
 
     /**
      * Starts new execution of run with given inputs, and wait for it to finish before returning the result.
-     * The inputs, execution and result will be automatically deleted from CloudScrape upon completion
+     * The inputs, execution and result will be automatically deleted from Dexi upon completion
      * - both successful and failed.
      *
      * @param string $runId
@@ -121,7 +121,7 @@ class Runs {
 
     /**
      * Starts new execution of run with given inputs, and wait for it to finish before returning the result.
-     * The inputs, execution and result will be automatically deleted from CloudScrape upon completion
+     * The inputs, execution and result will be automatically deleted from Dexi upon completion
      * - both successful and failed.
      *
      * @param string $runId 

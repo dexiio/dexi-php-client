@@ -3,7 +3,7 @@
 require __DIR__ . '/vendor/autoload.php';
 
 //See https://app.dexi.io/#/api
-define('CS_API_KEY', 'Your secret API Key'); // See https://app.cloudscrape.com/#/api
+define('CS_API_KEY', 'Your secret API Key'); // See https://app.dexi.io/#/api
 define('CS_ACCOUNT_ID', 'Your account ID');
 $someRunId = 'The ID for a run'; // Edit your runs inside the app to get their ID
 

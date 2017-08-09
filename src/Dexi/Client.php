@@ -47,6 +47,11 @@ class Client {
     private $runs;
 
     /**
+     * @var Robots
+     */
+    private $robots;
+
+    /**
      * Client constructor
      *
      * @param string $apiKey
@@ -122,7 +127,7 @@ class Client {
 
 
     /**
-     * Make a call to the CloudScrape API
+     * Make a call to the Dexi API
      *
      * @param string $url
      * @param string $method
@@ -144,14 +149,21 @@ class Client {
             $headers[] = "Content-Length: " . strlen($content);
         }
 
-        $outRaw = $this->executeCurlRequest($this->endPoint . $url, $headers, $content, $method);
+        $fullUrl = $this->endPoint . $url;
+        $outRaw = $this->executeCurlRequest($fullUrl, $headers, $content, $method);
 
-        $out = $this->parseHeaders($http_response_header);
+        $responseHeaders = get_headers($fullUrl);
+        if ($responseHeaders === false) {
+            throw new RequestException("Dexi request failed - invalid headers", $url);
+        }
+
+        $out = $this->parseHeaders($responseHeaders);
 
         $out->content = $outRaw;
 
+        var_dump($out);
         if ($out->statusCode < 100 || $out->statusCode > 399) {
-            throw new RequestException("CloudScrape request failed: $out->statusCode $out->reason", $url, $out);
+            throw new RequestException("Dexi request failed: $out->statusCode $out->reason", $url, $out);
         }
 
         return $out;
@@ -199,7 +211,7 @@ class Client {
             }
 
             foreach($http_response_header as $header) {
-                $parts = explode(':',$header,2);
+                $parts = explode(':', $header, 2);
                 if (count($parts) < 2) {
                     continue;
                 }

@@ -20,7 +20,7 @@ The following [example](./example.php) executes a run and retrieves information 
 // Load using the composer autoloader to handle our PSR-4 namespacing
 require __DIR__ . '/vendor/autoload.php';
 
-define('CS_API_KEY', 'Your secret API Key'); // See https://app.cloudscrape.com/#/api
+define('CS_API_KEY', 'Your secret API Key'); // See https://app.dexi.io/#/api
 define('CS_ACCOUNT_ID', 'Your account ID');
 $someRunId = '59f3822f-6abc-4a01-81dc-5002a31f2dbc'; // Edit your runs inside the app to get their ID
 
