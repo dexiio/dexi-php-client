@@ -6,12 +6,34 @@ use Dexi\Exception\RequestException;
 
 class Client {
 
+    /**
+     * @var string
+     */
     private $endPoint = 'https://api.dexi.io/';
+
+    /**
+     * @var string
+     */
     private $userAgent = 'CS-PHP-CLIENT/1.0';
+
+    /**
+     * @var string
+     */
     private $apiKey;
+
+    /**
+     * @var string
+     */
     private $accountId;
+
+    /**
+     * @var string
+     */
     private $accessKey;
 
+    /**
+     * @var int
+     */
     private $requestTimeout = 3600;
 
     /**
@@ -24,6 +46,12 @@ class Client {
      */
     private $runs;
 
+    /**
+     * Client constructor
+     *
+     * @param string $apiKey
+     * @param string $accountId
+     */
     function __construct($apiKey, $accountId) {
         $this->apiKey = $apiKey;
         $this->accountId = $accountId;
@@ -36,6 +64,7 @@ class Client {
 
     /**
      * Get current request timeout
+     *
      * @return int
      */
     public function getRequestTimeout() {
@@ -57,6 +86,7 @@ class Client {
 
     /**
      * Get endpoint / base url of requests
+     *
      * @return string
      */
     public function getEndPoint() {
@@ -65,6 +95,7 @@ class Client {
 
     /**
      * Set end point / base url of requests
+     *
      * @param string $endPoint
      */
     public function setEndPoint($endPoint) {
@@ -73,6 +104,7 @@ class Client {
 
     /**
      * Get user agent of requests
+     *
      * @return string
      */
     public function getUserAgent() {
@@ -81,6 +113,7 @@ class Client {
 
     /**
      * Set user agent of requests
+     *
      * @param string $userAgent
      */
     public function setUserAgent($userAgent) {
@@ -89,8 +122,8 @@ class Client {
 
 
     /**
-     *
      * Make a call to the CloudScrape API
+     *
      * @param string $url
      * @param string $method
      * @param mixed $body Will be converted into json
@@ -168,7 +201,9 @@ class Client {
     }
 
     /**
-     * Interact with executions.
+    /**
+     * Interact with executions
+     *
      * @return Executions
      */
     public function executions() {
@@ -177,6 +212,7 @@ class Client {
 
     /**
      * Interact with runs
+     *
      * @return Runs
      */
     public function runs() {
@@ -185,6 +221,7 @@ class Client {
 
     /**
      * Interact with robots
+     *
      * @return Robots
      */
     public function robots() {
