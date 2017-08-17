@@ -144,9 +144,28 @@ class Client {
             $headers[] = "Content-Length: " . strlen($content);
         }
 
-        $outRaw = $this->executeCurlRequest($this->endPoint . $url, $headers, $content, $method);
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL,$this->endPoint . $url);
+        curl_setopt($ch, CURLOPT_POST, $method == 'POST');
+        curl_setopt($ch,CURLOPT_POSTFIELDS, $content);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch,CURLOPT_TIMEOUT,$this->requestTimeout);
+        curl_setopt($ch, CURLOPT_HEADER, 1);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_VERBOSE, 1);
 
-        $out = $this->parseHeaders($http_response_header);
+        $response = curl_exec($ch);
+        $headerSize = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+        $header = substr($response, 0, $headerSize);
+        $outRaw = substr($response, $headerSize);
+
+
+        $out = (object)array(
+            'statusCode' => curl_getinfo($ch, CURLINFO_HTTP_CODE),
+            'reason' => curl_error($ch),
+            'headers' => $header,
+        );
+        curl_close($ch);
 
         $out->content = $outRaw;
 
@@ -182,39 +201,6 @@ class Client {
     }
 
     /**
-     * @param string[] $http_response_header
-     * @return object
-     */
-    private function parseHeaders($http_response_header) {
-        $status = 0;
-        $reason = '';
-        $outHeaders = array();
-
-        if ($http_response_header &&
-            count($http_response_header) > 0) {
-            $httpHeader = array_shift($http_response_header);
-            if (preg_match('/([0-9]{3})\s+([A-Z_]+)/i', $httpHeader, $matches)) {
-                $status = intval($matches[1]);
-                $reason = $matches[2];
-            }
-
-            foreach($http_response_header as $header) {
-                $parts = explode(':',$header,2);
-                if (count($parts) < 2) {
-                    continue;
-                }
-
-                $outHeaders[trim($parts[0])] = $parts[1];
-            }
-        }
-
-        return (object) array(
-            'statusCode' => $status,
-            'reason' => $reason,
-            'headers' => $outHeaders
-        );
-    }
-
     /**
      * Interact with executions
      *
@@ -240,34 +226,5 @@ class Client {
      */
     public function robots() {
         return $this->robots;
-    }
-
-    /**
-     * @param string $url
-     * @param string[] $headers
-     * @param string $body
-     * @param string $method
-     * @return mixed
-     */
-    private function executeCurlRequest($url, $headers, $body = '', $method = 'GET') {
-        $ch = curl_init($url);
-
-        switch (strtoupper($method)) {
-            case 'POST':
-            case 'PUT':
-                curl_setopt($ch, CURLOPT_POST, true);
-                curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
-                break;
-        }
-
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_TIMEOUT, $this->requestTimeout);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-        $result = curl_exec($ch);
-        curl_close($ch);
-
-        return $result;
     }
 }
