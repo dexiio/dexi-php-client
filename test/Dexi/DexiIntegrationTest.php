@@ -20,7 +20,7 @@ class DexiIntegrationTest extends TestCase {
      * @throws Exception
      */
     public function beforeEach () {
-        $settings = parse_ini_file('../../configuration.ini', true);
+        $settings = parse_ini_file(__DIR__ . '/../../configuration.ini', true);
         if ($settings === false || !isset($settings['tests'])) {
             throw new Exception('Unable to run tests - no test configuration found');
         }
