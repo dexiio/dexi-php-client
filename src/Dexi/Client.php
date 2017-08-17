@@ -65,6 +65,14 @@ class Client {
         $this->executions = new Executions($this);
         $this->runs = new Runs($this);
         $this->robots = new Robots($this);
+        $this->dataSets = new DataSets($this);
+    }
+
+    /**
+     * @return string
+     */
+    public function getAccountId() {
+        return $this->accountId;
     }
 
     /**
@@ -138,7 +146,7 @@ class Client {
     public function request($url, $method = 'GET', $body = null) {
         $content = $body ? json_encode($body) : null;
 
-        $headers = array();
+        $headers = [];
         $headers[] = "X-DexiIO-Access: $this->accessKey";
         $headers[] = "X-DexiIO-Account: $this->accountId";
         $headers[] = "User-Agent: $this->userAgent";
@@ -150,19 +158,18 @@ class Client {
         }
 
         $fullUrl = $this->endPoint . $url;
-        $outRaw = $this->executeCurlRequest($fullUrl, $headers, $content, $method);
+        $out = $this->executeCurlRequest($fullUrl, $headers, $content, $method);
 
-        $responseHeaders = get_headers($fullUrl);
-        if ($responseHeaders === false) {
-            throw new RequestException("Dexi request failed - invalid headers", $url);
-        }
-
-        $out = $this->parseHeaders($responseHeaders);
-
-        $out->content = $outRaw;
-
-        var_dump($out);
         if ($out->statusCode < 100 || $out->statusCode > 399) {
+            $payload = json_decode($out->content);
+            if ($payload !== null) {
+                if (isset($payload->msg)) {
+                    throw new RequestException("Dexi request failed: $out->statusCode $payload->msg", $url, $out);
+                } else if (isset($payload->message)) {
+                    throw new RequestException("Dexi request failed: $out->statusCode $payload->message", $url, $out);
+                }
+            }
+
             throw new RequestException("Dexi request failed: $out->statusCode $out->reason", $url, $out);
         }
 
@@ -194,40 +201,6 @@ class Client {
     }
 
     /**
-     * @param string[] $http_response_header
-     * @return object
-     */
-    private function parseHeaders($http_response_header) {
-        $status = 0;
-        $reason = '';
-        $outHeaders = array();
-
-        if ($http_response_header &&
-            count($http_response_header) > 0) {
-            $httpHeader = array_shift($http_response_header);
-            if (preg_match('/([0-9]{3})\s+([A-Z_]+)/i', $httpHeader, $matches)) {
-                $status = intval($matches[1]);
-                $reason = $matches[2];
-            }
-
-            foreach($http_response_header as $header) {
-                $parts = explode(':', $header, 2);
-                if (count($parts) < 2) {
-                    continue;
-                }
-
-                $outHeaders[trim($parts[0])] = $parts[1];
-            }
-        }
-
-        return (object) array(
-            'statusCode' => $status,
-            'reason' => $reason,
-            'headers' => $outHeaders
-        );
-    }
-
-    /**
      * Interact with executions
      *
      * @return Executions
@@ -255,6 +228,15 @@ class Client {
     }
 
     /**
+     * Interact with data sets
+     *
+     * @return DataSets
+     */
+    public function dataSets() {
+        return $this->dataSets;
+    }
+
+    /**
      * @param string $url
      * @param string[] $headers
      * @param string $body
@@ -275,11 +257,61 @@ class Client {
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_TIMEOUT, $this->requestTimeout);
+        curl_setopt($ch, CURLOPT_HEADER, true);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-        $result = curl_exec($ch);
+        $response = curl_exec($ch);
+        $headerSize = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+        $headerDefinition = $this->parseHeaderDefinition(substr($response, 0, $headerSize));
+        $out = (object) [
+            'statusCode' => curl_getinfo($ch, CURLINFO_HTTP_CODE),
+            'reason' => $headerDefinition->reason,
+            'headers' => $headerDefinition->headers,
+            'content' => substr($response, $headerSize)
+        ];
+
         curl_close($ch);
 
-        return $result;
+        return $out;
+    }
+
+    /**
+     * Parse a header definition to retrieve the HTTP status code, the text description and the actual headers
+     *
+     * @param string|string[] $headerDefinition
+     * @return object
+     */
+    private function parseHeaderDefinition ($headerDefinition) {
+        $status = 0;
+        $reason = '';
+
+        if (is_array($headerDefinition)) {
+            $rawHeaders = $headerDefinition;
+        } else {
+            $rawHeaders = explode("\r\n", $headerDefinition);
+        }
+
+        $headers = [];
+        if ($rawHeaders && count($rawHeaders) > 0) {
+            $httpHeader = array_shift($rawHeaders);
+            if (preg_match('/([0-9]{3})\s+([A-Z_]+)/i', $httpHeader, $matches)) {
+                $status = intval($matches[1]);
+                $reason = $matches[2];
+            }
+
+            foreach($rawHeaders as $header) {
+                $parts = explode(':', $header,2);
+                if (count($parts) < 2) {
+                    continue;
+                }
+
+                $headers[trim($parts[0])] = trim($parts[1]);
+            }
+        }
+        return (object) [
+            'statusCode' => $status,
+            'reason' => $reason,
+            'headers' => $headers
+        ];
     }
 }

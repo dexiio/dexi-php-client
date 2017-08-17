@@ -58,6 +58,16 @@ class Dexi {
     }
 
     /**
+     * @return DataSets
+     * @throws \Exception if Dexi::init was not called
+     */
+    public static function dataSets() {
+        self::checkState();
+
+        return self::$client->dataSets();
+    }
+
+    /**
      * @throws \Exception
      */
     private static function checkState() {

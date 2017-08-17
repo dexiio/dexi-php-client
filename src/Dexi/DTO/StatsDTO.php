@@ -5,12 +5,18 @@ namespace Dexi\DTO;
 class StatsDTO {
 
     /**
+     * Whether the execution has been archived
+     *
+     * @var boolean
+     */
+    public $archived;
+
+    /**
      * Max number of concurrent running results (as configured on the run).
      * 
      * @var int
      */
     public $concurrency;
-
 
     /**
      * UTC Unix timestamp of the time the execution was created.
