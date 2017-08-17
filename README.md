@@ -6,7 +6,7 @@ Dexi API Client for PHP 5.3+
 
 dexi-php-client is available via [composer/packagist](https://packagist.org/packages/dexiio/dexi-api-client) as ```dexi-api-client```. Install it by adding it to your composer.json file:
 
-```"dexiio/dexi-api-client": "~1.0"```
+```"dexiio/dexi-api-client": "~1.1"```
 
 or
 
@@ -41,6 +41,7 @@ The following API namespaces are contained in the global ```Dexi\Dexi``` class:
 ```\Dexi\Dexi::executions()```
 ```\Dexi\Dexi::runs()```
 ```\Dexi\Dexi::robots()```
+```\Dexi\Dexi::dataSets()```
 
 These namespaces contain the methods displayed in the API documentation. Models are defined in the ```\Dexi\DTO\``` namespace.
 
@@ -64,6 +65,7 @@ have also been added.
 |CloudScrapeExecutions|\Dexi\Executions|
 |CloudScrapeRuns|\Dexi\Runs|
 ||\Dexi\Robots|
+||\Dexi\DataSets|
 |CloudScrapeRunDTO|\Dexi\DTO\RunDTO|
 ||\Dexi\DTO\RunListDTO|
 |CloudScrapeResultDTO|\Dexi\DTO\ResultDTO|
@@ -72,7 +74,23 @@ have also been added.
 |CloudScrapeExecutionListDTO|\Dexi\DTO\ExecutionListDTO|
 ||\Dexi\DTO\StatsDTO|
 ||\Dexi\DTO\RobotDTO|
+||\Dexi\DTO\DataSetRowSetDTO|
+||\Dexi\DTO\DataSetRowQueryDTO|
 |CloudScrapeRequestException|\Dexi\Exception\RequestException|
+
+## Testing
+PHPUnit integration tests are provided in the ```test/Dexi``` folder. In order to run them, a ```configuration.ini``` file
+must be created in the top-level folder with the following settings:
+
+```
+[tests]
+apiKey=<a valid api key>
+accountId=<your account id>
+
+# Optional fields
+categoryId=<if set, will store created resources in this folder>
+dataSetId=<if set, provides data set tests using this data set>
+```
 
 ## Contributing
 Please submit bug reports, suggestions and pull requests to [through Github](https://github.com/dexiio/dexi-php-client/issues).
