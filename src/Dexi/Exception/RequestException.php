@@ -2,27 +2,31 @@
 
 namespace Dexi\Exception;
 
+/**
+ * Class RequestException
+ *
+ * @package Dexi\Exception
+ */
 class RequestException extends \Exception {
 
-    private $response;
     private $url;
+    private $response;
 
     /**
-     * @param string $msg
+     * @param string $message
      * @param string $url
      * @param object $response
      */
-    function __construct($msg, $url, $response) {
-        parent::__construct($msg, $response->statusCode);
-        $this->response = $response;
+    function __construct($message, $url, $response = null) {
+        parent::__construct($message, $response ? $response->statusCode : 0);
         $this->url = $url;
+        $this->response = $response;
     }
 
     /**
      * @return object The response object
      */
-    public function getResponse()
-    {
+    public function getResponse() {
         return $this->response;
     }
 

@@ -13,13 +13,29 @@ class RunDTO {
 
     /**
      * The ID of the run
+     *
      * @var string
      */
     public $_id;
 
     /**
+     * The ID of the account that owns this run
+     *
+     * @var string
+     */
+    public $accountId;
+
+    /**
      * Name of the run
+     *
      * @var string
      */
     public $name;
+
+    /**
+     * The ID of the robot that owns this run
+     *
+     * @var string
+     */
+    public $robotId;
 }

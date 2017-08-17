@@ -47,6 +47,16 @@ class Client {
     private $runs;
 
     /**
+     * @var Robots
+     */
+    private $robots;
+
+    /**
+     * @var DataSets
+     */
+    private $dataSets;
+
+    /**
      * Client constructor
      *
      * @param string $apiKey
@@ -60,6 +70,14 @@ class Client {
         $this->executions = new Executions($this);
         $this->runs = new Runs($this);
         $this->robots = new Robots($this);
+        $this->dataSets = new DataSets($this);
+    }
+
+    /**
+     * @return string
+     */
+    public function getAccountId() {
+        return $this->accountId;
     }
 
     /**
@@ -122,7 +140,7 @@ class Client {
 
 
     /**
-     * Make a call to the CloudScrape API
+     * Make a call to the Dexi API
      *
      * @param string $url
      * @param string $method
@@ -133,7 +151,7 @@ class Client {
     public function request($url, $method = 'GET', $body = null) {
         $content = $body ? json_encode($body) : null;
 
-        $headers = array();
+        $headers = [];
         $headers[] = "X-DexiIO-Access: $this->accessKey";
         $headers[] = "X-DexiIO-Account: $this->accountId";
         $headers[] = "User-Agent: $this->userAgent";
@@ -144,33 +162,20 @@ class Client {
             $headers[] = "Content-Length: " . strlen($content);
         }
 
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL,$this->endPoint . $url);
-        curl_setopt($ch, CURLOPT_POST, $method == 'POST');
-        curl_setopt($ch,CURLOPT_POSTFIELDS, $content);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch,CURLOPT_TIMEOUT,$this->requestTimeout);
-        curl_setopt($ch, CURLOPT_HEADER, 1);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_VERBOSE, 1);
-
-        $response = curl_exec($ch);
-        $headerSize = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
-        $header = substr($response, 0, $headerSize);
-        $outRaw = substr($response, $headerSize);
-
-
-        $out = (object)array(
-            'statusCode' => curl_getinfo($ch, CURLINFO_HTTP_CODE),
-            'reason' => curl_error($ch),
-            'headers' => $header,
-        );
-        curl_close($ch);
-
-        $out->content = $outRaw;
+        $fullUrl = $this->endPoint . $url;
+        $out = $this->executeCurlRequest($fullUrl, $headers, $content, $method);
 
         if ($out->statusCode < 100 || $out->statusCode > 399) {
-            throw new RequestException("CloudScrape request failed: $out->statusCode $out->reason", $url, $out);
+            $payload = json_decode($out->content);
+            if ($payload !== null) {
+                if (isset($payload->msg)) {
+                    throw new RequestException("Dexi request failed: $out->statusCode $payload->msg", $url, $out);
+                } else if (isset($payload->message)) {
+                    throw new RequestException("Dexi request failed: $out->statusCode $payload->message", $url, $out);
+                }
+            }
+
+            throw new RequestException("Dexi request failed: $out->statusCode $out->reason", $url, $out);
         }
 
         return $out;
@@ -201,7 +206,6 @@ class Client {
     }
 
     /**
-    /**
      * Interact with executions
      *
      * @return Executions
@@ -226,5 +230,93 @@ class Client {
      */
     public function robots() {
         return $this->robots;
+    }
+
+    /**
+     * Interact with data sets
+     *
+     * @return DataSets
+     */
+    public function dataSets() {
+        return $this->dataSets;
+    }
+
+    /**
+     * @param string $url
+     * @param string[] $headers
+     * @param string $body
+     * @param string $method
+     * @return mixed
+     */
+    private function executeCurlRequest($url, $headers, $body = '', $method = 'GET') {
+        $ch = curl_init($url);
+
+        switch (strtoupper($method)) {
+            case 'POST':
+            case 'PUT':
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
+                break;
+        }
+
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_TIMEOUT, $this->requestTimeout);
+        curl_setopt($ch, CURLOPT_HEADER, true);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        $response = curl_exec($ch);
+        $headerSize = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+        $headerDefinition = $this->parseHeaderDefinition(substr($response, 0, $headerSize));
+        $out = (object) [
+            'statusCode' => curl_getinfo($ch, CURLINFO_HTTP_CODE),
+            'reason' => $headerDefinition->reason,
+            'headers' => $headerDefinition->headers,
+            'content' => substr($response, $headerSize)
+        ];
+
+        curl_close($ch);
+
+        return $out;
+    }
+
+    /**
+     * Parse a header definition to retrieve the HTTP status code, the text description and the actual headers
+     *
+     * @param string|string[] $headerDefinition
+     * @return object
+     */
+    private function parseHeaderDefinition ($headerDefinition) {
+        $status = 0;
+        $reason = '';
+
+        if (is_array($headerDefinition)) {
+            $rawHeaders = $headerDefinition;
+        } else {
+            $rawHeaders = explode("\r\n", $headerDefinition);
+        }
+
+        $headers = [];
+        if ($rawHeaders && count($rawHeaders) > 0) {
+            $httpHeader = array_shift($rawHeaders);
+            if (preg_match('/([0-9]{3})\s+([A-Z_]+)/i', $httpHeader, $matches)) {
+                $status = intval($matches[1]);
+                $reason = $matches[2];
+            }
+
+            foreach($rawHeaders as $header) {
+                $parts = explode(':', $header,2);
+                if (count($parts) < 2) {
+                    continue;
+                }
+
+                $headers[trim($parts[0])] = trim($parts[1]);
+            }
+        }
+        return (object) [
+            'statusCode' => $status,
+            'reason' => $reason,
+            'headers' => $headers
+        ];
     }
 }

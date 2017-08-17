@@ -21,20 +21,30 @@ class ExecutionDTO {
      * State of the executions. See const definitions on class to see options
      * @var string
      */
-    public $_state;
+    public $state;
 
     /**
      * Time the executions was started - in milliseconds since unix epoch
      * @var int
      */
-    public $_starts;
+    public $starts;
 
     /**
      * Time the executions finished - in milliseconds since unix epoch.
      * Null if execution has not yet finished.
      * @var int
      */
-    public $_finished;
+    public $finished;
+
+    /**
+     * @var string
+     */
+    public $robotId;
+
+    /**
+     * @var string
+     */
+    public $runId;
 
 }
 

@@ -27,18 +27,18 @@ class Runs {
      * @return RunDTO
      */
     public function create($run, $robotId = null) {
-        return $this->client->requestJson("runs?robotId=$robotId", 'POST', $run);
+        return $this->update((object) $run, $robotId);
     }
 
     /**
-     * Update run by id. The run is created if not found.
+     * Update run by id. The run is created if not found. Actually an alias for create()
      *
      * @param object|array $run
      * @param string $robotId Optional. The id of the robot whose run should be updated. If not provided, the robot id of the run is used.
      * @return RunDTO
      */
     public function update($run, $robotId = null) {
-        return $this->client->requestJson("runs?robotId=$robotId", 'PUT', $run);
+        return $this->client->requestJson("runs?robotId=$robotId", 'POST', (object) $run);
     }
 
     /**
@@ -51,8 +51,7 @@ class Runs {
      * @return RunListDTO
      */
     public function getRuns($robotId = null, $offset = 0, $limit = 30) {
-        return $this->client->requestJson("runs/list?robotId=$robotId&offset=$offset&limit=$limit");
-
+        return $this->client->requestJson("runs?robotId=$robotId&offset=$offset&limit=$limit");
     }
 
     /**
@@ -88,7 +87,7 @@ class Runs {
 
     /**
      * Start new execution of the run, and wait for it to finish before returning the result.
-     * The execution and result will be automatically deleted from CloudScrape completion
+     * The execution and result will be automatically deleted from Dexi completion
      * - both successful and failed.
      *
      * @param string $runId
@@ -104,7 +103,7 @@ class Runs {
 
     /**
      * Starts new execution of run with given inputs, and wait for it to finish before returning the result.
-     * The inputs, execution and result will be automatically deleted from CloudScrape upon completion
+     * The inputs, execution and result will be automatically deleted from Dexi upon completion
      * - both successful and failed.
      *
      * @param string $runId
@@ -112,16 +111,16 @@ class Runs {
      * @param boolean $connect When true execution will upload its result to configured integrations for this run
      * @param string $format Specify the format you want the output to be in. Valid values are json, csv, xml and scsv.
      * @param boolean $deleteAfter Automatically delete the execution after it succeeded, failed, both (true) or never (false). Defaults to true.
-     * @return ExecutionDTO
+     * @return ResultDTO
      */
     public function executeWithInputSync($runId, $inputs, $connect = false, $format = 'json', $deleteAfter = true) {
         $format = in_array($format, ['json', 'xml', 'csv', 'scsv']) ? $format : 'json';
-        return $this->client->requestJson("runs/$runId/execute/inputs/wait?connect=$connect&format=$format&deleteAfter=$deleteAfter",'POST', $inputs);
+        return $this->client->requestJson("runs/$runId/execute/inputs/wait?connect=$connect&format=$format&deleteAfter=$deleteAfter",'POST', (object) $inputs);
     }
 
     /**
      * Starts new execution of run with given inputs, and wait for it to finish before returning the result.
-     * The inputs, execution and result will be automatically deleted from CloudScrape upon completion
+     * The inputs, execution and result will be automatically deleted from Dexi upon completion
      * - both successful and failed.
      *
      * @param string $runId 
@@ -129,7 +128,7 @@ class Runs {
      * @param boolean $connect When true execution will upload its result to configured integrations for this run
      * @param string $format Specify the format you want the output to be in. Valid values are json, csv, xml and scsv.
      * @param boolean $deleteAfter Automatically delete the execution after it succeeded, failed, both (true) or never (false). Defaults to true.
-     * @return ExecutionDTO
+     * @return ResultDTO
      */
     public function executeBulkSync($runId, $inputs, $connect = false, $format = 'json', $deleteAfter = true) {
         $format = in_array($format, ['json', 'xml', 'csv', 'scsv']) ? $format : 'json';
@@ -140,24 +139,24 @@ class Runs {
      * Starts new execution of run with given inputs
      *
      * @param string $runId
-     * @param object $inputs
+     * @param object|array $inputs
      * @param boolean $connect When true execution will upload its result to configured integrations for this run
      * @return ExecutionDTO
      */
     public function executeWithInput($runId, $inputs, $connect = false) {
-        return $this->client->requestJson("runs/$runId/execute/inputs?connect=$connect",'POST', $inputs);
+        return $this->client->requestJson("runs/$runId/execute/inputs?connect=$connect",'POST', (object) $inputs);
     }
 
     /**
      * Starts new execution of run using the input rows from the body instead of from the run itself.
      *
      * @param string $runId
-     * @param object $inputs
+     * @param object|array $inputs
      * @param boolean $connect When true execution will upload its result to configured integrations for this run
      * @return ExecutionDTO
      */
     public function executeBulk($runId, $inputs, $connect = false) {
-        return $this->client->requestJson("runs/$runId/execute/bulk?connect=$connect",'POST', $inputs);
+        return $this->client->requestJson("runs/$runId/execute/bulk?connect=$connect",'POST', (object) $inputs);
     }
 
     /**
@@ -209,7 +208,7 @@ class Runs {
     public function setInputs($runId, $inputs, $append = true, $format = 'json') {
         $append = ($append ? 'true' : 'false');
         $format = (in_array($format, ['json', 'csv', 'xml', 'scsv']) ? $format : 'json');
-        return $this->client->requestJson("runs/$runId/inputs?append=$append&format=$format",'POST', $inputs);
+        return $this->client->requestJson("runs/$runId/inputs?append=$append&format=$format",'PUT', $inputs);
     }
 }
 
