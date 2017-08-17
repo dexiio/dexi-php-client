@@ -52,6 +52,11 @@ class Client {
     private $robots;
 
     /**
+     * @var DataSets
+     */
+    private $dataSets;
+
+    /**
      * Client constructor
      *
      * @param string $apiKey
