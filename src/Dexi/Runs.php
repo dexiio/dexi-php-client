@@ -68,7 +68,7 @@ class Runs {
      * Permanently delete run
      *
      * @param string $runId
-     * @return bool
+     * @return boolean
      */
     public function remove($runId) {
         return $this->client->requestBoolean("runs/$runId", 'DELETE');
@@ -82,6 +82,7 @@ class Runs {
      * @return ExecutionDTO
      */
     public function execute($runId, $connect = false) {
+        $connect = ($connect ? 'true' : 'false');
         return $this->client->requestJson("runs/$runId/execute?connect=$connect",'POST');
     }
 
@@ -97,6 +98,8 @@ class Runs {
      * @return ResultDTO
      */
     public function executeSync($runId, $connect = false, $format = 'json', $deleteAfter = true) {
+        $connect = ($connect ? 'true' : 'false');
+        $deleteAfter = ($deleteAfter ? 'true' : 'false');
         $format = in_array($format, ['json', 'xml', 'csv', 'scsv']) ? $format : 'json';
         return $this->client->requestJson("runs/$runId/execute/wait?connect=$connect&format=$format&deleteAfter=$deleteAfter",'POST');
     }
@@ -114,6 +117,8 @@ class Runs {
      * @return ResultDTO
      */
     public function executeWithInputSync($runId, $inputs, $connect = false, $format = 'json', $deleteAfter = true) {
+        $connect = ($connect ? 'true' : 'false');
+        $deleteAfter = ($deleteAfter ? 'true' : 'false');
         $format = in_array($format, ['json', 'xml', 'csv', 'scsv']) ? $format : 'json';
         return $this->client->requestJson("runs/$runId/execute/inputs/wait?connect=$connect&format=$format&deleteAfter=$deleteAfter",'POST', (object) $inputs);
     }
@@ -131,6 +136,8 @@ class Runs {
      * @return ResultDTO
      */
     public function executeBulkSync($runId, $inputs, $connect = false, $format = 'json', $deleteAfter = true) {
+        $connect = ($connect ? 'true' : 'false');
+        $deleteAfter = ($deleteAfter ? 'true' : 'false');
         $format = in_array($format, ['json', 'xml', 'csv', 'scsv']) ? $format : 'json';
         return $this->client->requestJson("runs/$runId/execute/bulk/wait?connect=$connect&format=$format&deleteAfter=$deleteAfter",'POST', $inputs);
     }
@@ -144,6 +151,7 @@ class Runs {
      * @return ExecutionDTO
      */
     public function executeWithInput($runId, $inputs, $connect = false) {
+        $connect = ($connect ? 'true' : 'false');
         return $this->client->requestJson("runs/$runId/execute/inputs?connect=$connect",'POST', (object) $inputs);
     }
 
@@ -156,6 +164,7 @@ class Runs {
      * @return ExecutionDTO
      */
     public function executeBulk($runId, $inputs, $connect = false) {
+        $connect = ($connect ? 'true' : 'false');
         return $this->client->requestJson("runs/$runId/execute/bulk?connect=$connect",'POST', (object) $inputs);
     }
 

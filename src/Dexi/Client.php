@@ -197,7 +197,7 @@ class Client {
      * @param string $url
      * @param string $method
      * @param mixed $body
-     * @return bool
+     * @return boolean
      * @throws RequestException
      */
     public function requestBoolean($url, $method = 'GET', $body = null) {

@@ -66,7 +66,7 @@ class Executions {
      * Stop running execution
      *
      * @param string $executionId
-     * @return bool
+     * @return boolean
      */
     public function stop($executionId) {
         return $this->client->requestBoolean("executions/$executionId/stop",'POST');
@@ -76,7 +76,7 @@ class Executions {
      * Resume stopped execution
      *
      * @param string $executionId
-     * @return bool
+     * @return boolean
      */
     public function resume($executionId) {
         return $this->client->requestBoolean("executions/$executionId/continue",'POST');

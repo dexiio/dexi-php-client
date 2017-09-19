@@ -53,7 +53,7 @@ class Robots {
      * Delete robot. This will also delete all runs and executions of this robot. Deleted robots can only be recovered via the UI.
      *
      * @param string $robotId
-     * @return bool
+     * @return boolean
      */
     public function remove($robotId) {
         return $this->client->requestBoolean("robots/$robotId", 'DELETE');
