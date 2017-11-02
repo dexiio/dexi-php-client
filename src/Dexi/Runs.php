@@ -165,7 +165,7 @@ class Runs {
      */
     public function executeBulk($runId, $inputs, $connect = false) {
         $connect = ($connect ? 'true' : 'false');
-        return $this->client->requestJson("runs/$runId/execute/bulk?connect=$connect",'POST', (object) $inputs);
+        return $this->client->requestJson("runs/$runId/execute/bulk?connect=$connect",'POST', $inputs);
     }
 
     /**

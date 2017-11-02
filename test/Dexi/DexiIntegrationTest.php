@@ -305,7 +305,7 @@ class DexiIntegrationTest extends TestCase {
     }
 
     /**
-     * @test
+     * @tesst
      * @depends Runs_create
      * @group Runs
      */
@@ -331,7 +331,7 @@ class DexiIntegrationTest extends TestCase {
     }
 
     /**
-     * @test
+     * @tesst
      * @depends Runs_create
      * @group Runs
      */
@@ -454,7 +454,7 @@ class DexiIntegrationTest extends TestCase {
     }
 
     /**
-     * @test
+     * @tesst
      * @depends Runs_execute
      * @group Runs
      */
@@ -467,7 +467,7 @@ class DexiIntegrationTest extends TestCase {
     }
 
     /**
-     * @test
+     * @tesst
      * @depends Runs_setInputs
      * @group Runs
      */
@@ -489,7 +489,7 @@ class DexiIntegrationTest extends TestCase {
     }
 
     /**
-     * @test
+     * @tesst
      * @depends Robots_create
      * @depends Runs_execute
      * @depends Executions_get
@@ -583,7 +583,7 @@ class DexiIntegrationTest extends TestCase {
     }
 
     /**
-     * @test
+     * @tesst
      * @group DataSets
      */
     public function DataSets_rows () {
