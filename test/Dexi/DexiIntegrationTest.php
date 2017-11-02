@@ -2,6 +2,7 @@
 
 use \PHPUnit\Framework\TestCase;
 use \PHPUnit\Framework\Assert;
+use \Rhumsaa\Uuid\Uuid;
 
 /**
  * Class DexiIntegrationTest
@@ -157,7 +158,8 @@ class DexiIntegrationTest extends TestCase {
             '_id' => self::$runId,
             'name' => 'Edited test robot run',
             'robotId' => self::$robotId,
-            'accountId' => \Dexi\Dexi::defaultClient()->getAccountId()
+            'accountId' => \Dexi\Dexi::defaultClient()->getAccountId(),
+            'version' => 1
         ]);
 
         Assert::assertNotNull($runDTO);
@@ -476,19 +478,6 @@ class DexiIntegrationTest extends TestCase {
 
     /**
      * @test
-     * @depends Runs_execute
-     * @group Runs
-     */
-    public function Executions_remove () {
-        $response = \Dexi\Dexi::executions()->remove(self::$executionId);
-
-        Assert::assertTrue($response);
-        
-        self::$executionId = null;
-    }
-
-    /**
-     * @test
      * @depends Robots_create
      * @depends Runs_execute
      * @depends Executions_get
@@ -499,6 +488,7 @@ class DexiIntegrationTest extends TestCase {
         $testRobot = file_get_contents(__DIR__ . '/../resources/test-file.robot');
         $robotDefinition = json_decode($testRobot);
         $robotDefinition->name = 'Test file robot';
+        $robotDefinition->_id = Uuid::uuid4()->toString();
         if (self::$categoryId) {
             $robotDefinition->categoryId = self::$categoryId;
         }
@@ -557,6 +547,19 @@ class DexiIntegrationTest extends TestCase {
         Assert::assertNotNull($fileDTO->contents);
         Assert::assertEquals('image/png', $fileDTO->mimeType);
         Assert::assertTrue(strlen($fileDTO->contents) > 0);
+    }
+
+    /**
+     * @test
+     * @depends Runs_execute
+     * @group Runs
+     */
+    public function Executions_remove () {
+        $response = \Dexi\Dexi::executions()->remove(self::$executionId);
+
+        Assert::assertTrue($response);
+
+        self::$executionId = null;
     }
 
     /**
