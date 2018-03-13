@@ -24,6 +24,7 @@ class Robots {
      *
      * @param object|array $robot
      * @return RobotDTO
+     * @throws Exception\RequestException
      */
     public function create($robot) {
         return $this->client->requestJson("robots", 'POST', (object) $robot);
@@ -34,6 +35,7 @@ class Robots {
      *
      * @param string $robotId
      * @return RobotDTO
+     * @throws Exception\RequestException
      */
     public function get($robotId) {
         return $this->client->requestJson("robots/$robotId");
@@ -44,6 +46,7 @@ class Robots {
      *
      * @param object|array $robot
      * @return RobotDTO
+     * @throws Exception\RequestException
      */
     public function update($robot) {
         return $this->client->requestJson("robots", 'PUT', (object) $robot);
@@ -54,6 +57,7 @@ class Robots {
      *
      * @param string $robotId
      * @return boolean
+     * @throws Exception\RequestException
      */
     public function remove($robotId) {
         return $this->client->requestBoolean("robots/$robotId", 'DELETE');

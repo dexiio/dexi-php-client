@@ -25,6 +25,7 @@ class Runs {
      * @param object|array $run
      * @param string $robotId Optional. The id of the robot whose run should be updated. If not provided, the robot id of the run is used.
      * @return RunDTO
+     * @throws Exception\RequestException
      */
     public function create($run, $robotId = null) {
         return $this->update((object) $run, $robotId);
@@ -36,6 +37,7 @@ class Runs {
      * @param object|array $run
      * @param string $robotId Optional. The id of the robot whose run should be updated. If not provided, the robot id of the run is used.
      * @return RunDTO
+     * @throws Exception\RequestException
      */
     public function update($run, $robotId = null) {
         return $this->client->requestJson("runs?robotId=$robotId", 'POST', (object) $run);
@@ -49,6 +51,7 @@ class Runs {
      * @param int $offset
      * @param int $limit
      * @return RunListDTO
+     * @throws Exception\RequestException
      */
     public function getRuns($robotId = null, $offset = 0, $limit = 30) {
         return $this->client->requestJson("runs?robotId=$robotId&offset=$offset&limit=$limit");
@@ -59,6 +62,7 @@ class Runs {
      *
      * @param string $runId
      * @return RunDTO
+     * @throws Exception\RequestException
      */
     public function get($runId) {
         return $this->client->requestJson("runs/$runId");
@@ -69,6 +73,7 @@ class Runs {
      *
      * @param string $runId
      * @return boolean
+     * @throws Exception\RequestException
      */
     public function remove($runId) {
         return $this->client->requestBoolean("runs/$runId", 'DELETE');
@@ -80,6 +85,7 @@ class Runs {
      * @param string $runId
      * @param boolean $connect When true execution will upload its result to configured integrations for this run
      * @return ExecutionDTO
+     * @throws Exception\RequestException
      */
     public function execute($runId, $connect = false) {
         $connect = ($connect ? 'true' : 'false');
@@ -96,11 +102,12 @@ class Runs {
      * @param string $format Specify the format you want the output to be in. Valid values are json, csv, xml and scsv.
      * @param boolean $deleteAfter Automatically delete the execution after it succeeded, failed, both (true) or never (false). Defaults to true.
      * @return ResultDTO
+     * @throws Exception\RequestException
      */
     public function executeSync($runId, $connect = false, $format = 'json', $deleteAfter = true) {
         $connect = ($connect ? 'true' : 'false');
         $deleteAfter = ($deleteAfter ? 'true' : 'false');
-        $format = in_array($format, ['json', 'xml', 'csv', 'scsv']) ? $format : 'json';
+        $format = in_array($format, array('json', 'xml', 'csv', 'scsv')) ? $format : 'json';
         return $this->client->requestJson("runs/$runId/execute/wait?connect=$connect&format=$format&deleteAfter=$deleteAfter",'POST');
     }
 
@@ -115,11 +122,12 @@ class Runs {
      * @param string $format Specify the format you want the output to be in. Valid values are json, csv, xml and scsv.
      * @param boolean $deleteAfter Automatically delete the execution after it succeeded, failed, both (true) or never (false). Defaults to true.
      * @return ResultDTO
+     * @throws Exception\RequestException
      */
     public function executeWithInputSync($runId, $inputs, $connect = false, $format = 'json', $deleteAfter = true) {
         $connect = ($connect ? 'true' : 'false');
         $deleteAfter = ($deleteAfter ? 'true' : 'false');
-        $format = in_array($format, ['json', 'xml', 'csv', 'scsv']) ? $format : 'json';
+        $format = in_array($format, array('json', 'xml', 'csv', 'scsv')) ? $format : 'json';
         return $this->client->requestJson("runs/$runId/execute/inputs/wait?connect=$connect&format=$format&deleteAfter=$deleteAfter",'POST', (object) $inputs);
     }
 
@@ -134,11 +142,12 @@ class Runs {
      * @param string $format Specify the format you want the output to be in. Valid values are json, csv, xml and scsv.
      * @param boolean $deleteAfter Automatically delete the execution after it succeeded, failed, both (true) or never (false). Defaults to true.
      * @return ResultDTO
+     * @throws Exception\RequestException
      */
     public function executeBulkSync($runId, $inputs, $connect = false, $format = 'json', $deleteAfter = true) {
         $connect = ($connect ? 'true' : 'false');
         $deleteAfter = ($deleteAfter ? 'true' : 'false');
-        $format = in_array($format, ['json', 'xml', 'csv', 'scsv']) ? $format : 'json';
+        $format = in_array($format, array('json', 'xml', 'csv', 'scsv')) ? $format : 'json';
         return $this->client->requestJson("runs/$runId/execute/bulk/wait?connect=$connect&format=$format&deleteAfter=$deleteAfter",'POST', $inputs);
     }
 
@@ -149,6 +158,7 @@ class Runs {
      * @param object|array $inputs
      * @param boolean $connect When true execution will upload its result to configured integrations for this run
      * @return ExecutionDTO
+     * @throws Exception\RequestException
      */
     public function executeWithInput($runId, $inputs, $connect = false) {
         $connect = ($connect ? 'true' : 'false');
@@ -162,6 +172,7 @@ class Runs {
      * @param object|array $inputs
      * @param boolean $connect When true execution will upload its result to configured integrations for this run
      * @return ExecutionDTO
+     * @throws Exception\RequestException
      */
     public function executeBulk($runId, $inputs, $connect = false) {
         $connect = ($connect ? 'true' : 'false');
@@ -175,10 +186,11 @@ class Runs {
      * @param string $format Specify the format you want the output to be in. Valid values are json, csv, xml and scsv.
      * @param string $state State of the execution. Valid values are null, QUEUED, PENDING, RUNNING, FAILED, STOPPED and OK
      * @return ResultDTO
+     * @throws Exception\RequestException
      */
     public function getLatestResult($runId, $format = 'json', $state = null) {
-        $format = in_array($format, ['json', 'xml', 'csv', 'scsv']) ? $format : 'json';
-        $state = in_array($format, ['QUEUED', 'PENDING', 'RUNNING', 'FAILED', 'STOPPED', 'OK']) ? $state : '';
+        $format = in_array($format, array('json', 'xml', 'csv', 'scsv')) ? $format : 'json';
+        $state = in_array($format, array('QUEUED', 'PENDING', 'RUNNING', 'FAILED', 'STOPPED', 'OK')) ? $state : '';
         return $this->client->requestJson("runs/$runId/latest/result?format=$format&state=$state");
     }
 
@@ -189,6 +201,7 @@ class Runs {
      * @param int $offset
      * @param int $limit
      * @return ExecutionListDTO
+     * @throws Exception\RequestException
      */
     public function getExecutions($runId, $offset = 0, $limit = 30) {
         return $this->client->requestJson("runs/$runId/executions?offset=$offset&limit=$limit");
@@ -199,6 +212,7 @@ class Runs {
      *
      * @param string $runId
      * @return boolean
+     * @throws Exception\RequestException
      */
     public function clearInputs($runId) {
         return $this->client->requestBoolean("runs/$runId/inputs", 'DELETE');
@@ -213,10 +227,11 @@ class Runs {
      * @param boolean $append Specify "set" or "append" mode
      * @param string $format Specify the format you want the output to be in. Valid values are json, csv, xml and scsv
      * @return RunDTO
+     * @throws Exception\RequestException
      */
     public function setInputs($runId, $inputs, $append = true, $format = 'json') {
         $append = ($append ? 'true' : 'false');
-        $format = (in_array($format, ['json', 'csv', 'xml', 'scsv']) ? $format : 'json');
+        $format = (in_array($format, array('json', 'csv', 'xml', 'scsv')) ? $format : 'json');
         return $this->client->requestJson("runs/$runId/inputs?append=$append&format=$format",'PUT', $inputs);
     }
 }

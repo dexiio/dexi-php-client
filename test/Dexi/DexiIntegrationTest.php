@@ -20,7 +20,7 @@ class DexiIntegrationTest extends TestCase {
      * @throws Exception
      */
     public function beforeEach () {
-        $settings = parse_ini_file(__DIR__ . '/../../configuration.ini', true);
+        $settings = parse_ini_file(realpath(__DIR__ . '/../../configuration.ini'), true);
         if ($settings === false || !isset($settings['tests'])) {
             throw new Exception('Unable to run tests - no test configuration found');
         }
@@ -305,7 +305,7 @@ class DexiIntegrationTest extends TestCase {
     }
 
     /**
-     * @tesst
+     * @test
      * @depends Runs_create
      * @group Runs
      */
@@ -331,7 +331,7 @@ class DexiIntegrationTest extends TestCase {
     }
 
     /**
-     * @tesst
+     * @test
      * @depends Runs_create
      * @group Runs
      */
@@ -454,7 +454,7 @@ class DexiIntegrationTest extends TestCase {
     }
 
     /**
-     * @tesst
+     * @test
      * @depends Runs_execute
      * @group Runs
      */
@@ -467,7 +467,7 @@ class DexiIntegrationTest extends TestCase {
     }
 
     /**
-     * @tesst
+     * @test
      * @depends Runs_setInputs
      * @group Runs
      */
@@ -489,7 +489,7 @@ class DexiIntegrationTest extends TestCase {
     }
 
     /**
-     * @tesst
+     * @test
      * @depends Robots_create
      * @depends Runs_execute
      * @depends Executions_get
@@ -583,7 +583,7 @@ class DexiIntegrationTest extends TestCase {
     }
 
     /**
-     * @tesst
+     * @test
      * @group DataSets
      */
     public function DataSets_rows () {

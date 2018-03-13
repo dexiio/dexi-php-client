@@ -21,6 +21,7 @@ class DataSets {
      * @param string $dataSetId
      * @param object|array|DataSetRowQueryDTO $body The query to perform
      * @return DataSetRowSetDTO
+     * @throws Exception\RequestException
      */
     public function rows($dataSetId, $body = null) {
         return $this->client->requestJson("datasets/$dataSetId/rows", 'POST', (object) $body);

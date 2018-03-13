@@ -23,6 +23,7 @@ class Executions {
      *
      * @param string $executionId
      * @return ExecutionDTO
+     * @throws Exception\RequestException
      */
     public function get($executionId) {
         return $this->client->requestJson("executions/$executionId");
@@ -33,6 +34,7 @@ class Executions {
      *
      * @param string $executionId
      * @return boolean
+     * @throws Exception\RequestException
      */
     public function remove($executionId) {
         return $this->client->requestBoolean("executions/$executionId",'DELETE');
@@ -44,9 +46,10 @@ class Executions {
      * @param string $executionId
      * @param string $format Specify the format you want the output to be in. Valid values are json, csv, xml and scsv.
      * @return ResultDTO
+     * @throws Exception\RequestException
      */
     public function getResult($executionId, $format = 'json') {
-        $format = in_array($format, ['json', 'xml', 'csv', 'scsv']) ? $format : 'json';
+        $format = in_array($format, array('json', 'xml', 'csv', 'scsv')) ? $format : 'json';
         return $this->client->requestJson("executions/$executionId/result?format=$format");
     }
 
@@ -56,6 +59,7 @@ class Executions {
      * @param string $executionId
      * @param string $fileId
      * @return FileDTO
+     * @throws Exception\RequestException
      */
     public function getResultFile($executionId, $fileId) {
         $response = $this->client->request("executions/$executionId/file/$fileId");
@@ -67,6 +71,7 @@ class Executions {
      *
      * @param string $executionId
      * @return boolean
+     * @throws Exception\RequestException
      */
     public function stop($executionId) {
         return $this->client->requestBoolean("executions/$executionId/stop",'POST');
@@ -77,6 +82,7 @@ class Executions {
      *
      * @param string $executionId
      * @return boolean
+     * @throws Exception\RequestException
      */
     public function resume($executionId) {
         return $this->client->requestBoolean("executions/$executionId/continue",'POST');
@@ -87,6 +93,7 @@ class Executions {
      *
      * @param string $executionId
      * @return StatsDTO
+     * @throws Exception\RequestException
      */
     public function getStats($executionId) {
         return $this->client->requestJson("executions/$executionId/stats");

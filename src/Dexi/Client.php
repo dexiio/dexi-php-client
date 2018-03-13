@@ -100,8 +100,6 @@ class Client {
         $this->requestTimeout = $requestTimeout;
     }
 
-
-
     /**
      * Get endpoint / base url of requests
      *
@@ -151,7 +149,7 @@ class Client {
     public function request($url, $method = 'GET', $body = null) {
         $content = $body ? json_encode($body) : null;
 
-        $headers = [];
+        $headers = array();
         $headers[] = "X-DexiIO-Access: $this->accessKey";
         $headers[] = "X-DexiIO-Account: $this->accountId";
         $headers[] = "User-Agent: $this->userAgent";
@@ -268,12 +266,12 @@ class Client {
         $response = curl_exec($ch);
         $headerSize = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
         $headerDefinition = $this->parseHeaderDefinition(substr($response, 0, $headerSize));
-        $out = (object) [
+        $out = (object) array(
             'statusCode' => curl_getinfo($ch, CURLINFO_HTTP_CODE),
             'reason' => $headerDefinition->reason,
             'headers' => $headerDefinition->headers,
             'content' => substr($response, $headerSize)
-        ];
+        );
 
         curl_close($ch);
 
@@ -296,7 +294,7 @@ class Client {
             $rawHeaders = explode("\r\n", $headerDefinition);
         }
 
-        $headers = [];
+        $headers = array();
         if ($rawHeaders && count($rawHeaders) > 0) {
             $httpHeader = array_shift($rawHeaders);
             if (preg_match('/([0-9]{3})\s+([A-Z_]+)/i', $httpHeader, $matches)) {
@@ -313,10 +311,10 @@ class Client {
                 $headers[trim($parts[0])] = trim($parts[1]);
             }
         }
-        return (object) [
+        return (object) array(
             'statusCode' => $status,
             'reason' => $reason,
             'headers' => $headers
-        ];
+        );
     }
 }
