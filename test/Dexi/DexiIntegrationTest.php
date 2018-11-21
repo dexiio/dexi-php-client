@@ -14,6 +14,7 @@ class DexiIntegrationTest extends TestCase {
     private static $executionId;
     private static $fileRobotId;
     private static $dataSetId;
+    private static $endpoint = 'https://api.dexi.io/';
 
     /**
      * @before
@@ -27,6 +28,9 @@ class DexiIntegrationTest extends TestCase {
 
         $apiKey = $settings['tests']['apiKey'];
         $accountId = $settings['tests']['accountId'];
+        if (array_key_exists('endpoint', $settings['tests'])) {
+            self::$endpoint = $settings['tests']['endpoint'];
+        }
 
         if (array_key_exists('categoryId', $settings['tests'])) {
             self::$categoryId = $settings['tests']['categoryId'];
@@ -36,7 +40,8 @@ class DexiIntegrationTest extends TestCase {
             self::$dataSetId = $settings['tests']['dataSetId'];
         }
 
-        \Dexi\Dexi::init($apiKey, $accountId);
+        ;
+        \Dexi\Dexi::init($apiKey, $accountId, self::$endpoint);
     }
 
     /**

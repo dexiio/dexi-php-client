@@ -9,7 +9,7 @@ class Client {
     /**
      * @var string
      */
-    private $endPoint = 'https://api.dexi.io/';
+    private $endpoint;
 
     /**
      * @var string
@@ -61,8 +61,10 @@ class Client {
      *
      * @param string $apiKey
      * @param string $accountId
+     * @param string [$endpoint]
      */
-    function __construct($apiKey, $accountId) {
+    function __construct($apiKey, $accountId, $endpoint = 'https://api.dexi.io/') {
+        $this->endpoint = $endpoint;
         $this->apiKey = $apiKey;
         $this->accountId = $accountId;
         $this->accessKey = md5($accountId . $apiKey);
@@ -105,17 +107,17 @@ class Client {
      *
      * @return string
      */
-    public function getEndPoint() {
-        return $this->endPoint;
+    public function getEndpoint() {
+        return $this->endpoint;
     }
 
     /**
      * Set end point / base url of requests
      *
-     * @param string $endPoint
+     * @param string $endpoint
      */
-    public function setEndPoint($endPoint) {
-        $this->endPoint = $endPoint;
+    public function setEndpoint($endpoint) {
+        $this->endpoint = $endpoint;
     }
 
     /**
@@ -159,7 +161,7 @@ class Client {
             $headers[] = "Content-Length: " . strlen($content);
         }
 
-        $fullUrl = $this->endPoint . $url;
+        $fullUrl = $this->endpoint . $url;
         $out = $this->executeCurlRequest($fullUrl, $headers, $content, $method);
 
         if ($out->statusCode < 100 || $out->statusCode > 399) {
@@ -203,7 +205,7 @@ class Client {
             $headers[] = "Content-Length: " . strlen($content);
         }
 
-        $fullUrl = $this->endPoint . $url;
+        $fullUrl = $this->endpoint . $url;
         if ($this->streamCurlRequest($fullUrl, $headers, $content, $method, $callback) === false) {
             throw new RequestException("Dexi request failed", $fullUrl);
         }
