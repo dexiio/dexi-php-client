@@ -1,4 +1,4 @@
-![dexi.io](https://dexi.io/images/dexi-green-blue.svg "dexi.io")
+![dexi.io](https://storage.googleapis.com/dexi-public/images/dexi-green-blue.svg)
 # dexi-php-client
 Dexi API Client for PHP 5.3+
 
