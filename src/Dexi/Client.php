@@ -136,7 +136,6 @@ class Client {
         $this->userAgent = $userAgent;
     }
 
-
     /**
      * Make a call to the Dexi API
      *
@@ -177,6 +176,37 @@ class Client {
         }
 
         return $out;
+    }
+
+
+    /**
+     * Make a call to the Dexi API
+     *
+     * @param callable $callback
+     * @param string $url
+     * @param string $method
+     * @param mixed $body Will be converted into json
+     * @return void
+     * @throws RequestException
+     */
+    public function stream($callback, $url, $method = 'GET', $body = null) {
+        $content = $body ? json_encode($body) : null;
+
+        $headers = array();
+        $headers[] = "X-DexiIO-Access: $this->accessKey";
+        $headers[] = "X-DexiIO-Account: $this->accountId";
+        $headers[] = "User-Agent: $this->userAgent";
+        $headers[] = "Accept: application/json";
+        $headers[] = "Content-Type: application/json";
+
+        if ($content) {
+            $headers[] = "Content-Length: " . strlen($content);
+        }
+
+        $fullUrl = $this->endPoint . $url;
+        if ($this->streamCurlRequest($fullUrl, $headers, $content, $method, $callback) === false) {
+            throw new RequestException("Dexi request failed", $fullUrl);
+        }
     }
 
     /**
@@ -276,6 +306,38 @@ class Client {
         curl_close($ch);
 
         return $out;
+    }
+
+    /**
+     * @param string $url
+     * @param string[] $headers
+     * @param string $body
+     * @param string $method
+     * @param callable $callback
+     * @return boolean
+     */
+    private function streamCurlRequest($url, $headers, $body = '', $method = 'GET', $callback = null) {
+        $ch = curl_init($url);
+
+        switch (strtoupper($method)) {
+            case 'POST':
+            case 'PUT':
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
+                break;
+        }
+
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_TIMEOUT, $this->requestTimeout);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, false);
+        curl_setopt($ch, CURLOPT_WRITEFUNCTION, $callback);
+
+        $result = curl_exec($ch);
+        curl_close($ch);
+
+        return $result;
     }
 
     /**
