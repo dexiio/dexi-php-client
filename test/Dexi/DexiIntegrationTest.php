@@ -463,12 +463,54 @@ class DexiIntegrationTest extends TestCase {
      * @depends Runs_execute
      * @group Runs
      */
+    public function Executions_streamResult () {
+
+        $timeout = 120;
+        $startTime = time();
+
+        while (true) {
+            $executionDTO = \Dexi\Dexi::executions()->get(self::$executionId);
+
+            if ($executionDTO->finished || time() > $startTime + $timeout) {
+                break;
+            }
+
+            sleep(5);
+        }
+
+        \Dexi\Dexi::executions()->streamResult(function ($resource, $data) {
+            Assert::assertInternalType('string', $data);
+            $size = strlen($data);
+            Assert::assertGreaterThan(0, $size);
+            return $size;
+        }, self::$executionId);
+    }
+
+    /**
+     * @test
+     * @depends Runs_execute
+     * @group Runs
+     */
     public function Runs_getLatestResult () {
         $resultDTO = \Dexi\Dexi::runs()->getLatestResult(self::$runId);
 
         Assert::assertNotNull($resultDTO);
         Assert::assertNotNull($resultDTO->totalRows);
         Assert::assertInternalType('int', $resultDTO->totalRows);
+    }
+
+    /**
+     * @test
+     * @depends Runs_execute
+     * @group Runs
+     */
+    public function Runs_streamLatestResult () {
+        \Dexi\Dexi::runs()->streamLatestResult(function ($resource, $data) {
+            Assert::assertInternalType('string', $data);
+            $size = strlen($data);
+            Assert::assertGreaterThan(0, $size);
+            return $size;
+        }, self::$runId);
     }
 
     /**
