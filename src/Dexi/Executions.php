@@ -14,6 +14,9 @@ class Executions {
      */
     private $client;
 
+    /**
+     * @param Client $client
+     */
     function __construct(Client $client) {
         $this->client = $client;
     }
@@ -51,6 +54,20 @@ class Executions {
     public function getResult($executionId, $format = 'json') {
         $format = in_array($format, array('json', 'xml', 'csv', 'scsv')) ? $format : 'json';
         return $this->client->requestJson("executions/$executionId/result?format=$format");
+    }
+
+    /**
+     * Stream the entire result of an execution
+     *
+     * @param callable $callable
+     * @param string $executionId
+     * @param string $format Specify the format you want the output to be in. Valid values are json, csv, xml and scsv.
+     * @return void
+     * @throws Exception\RequestException
+     */
+    public function streamResult($callable, $executionId, $format = 'json') {
+        $format = in_array($format, array('json', 'xml', 'csv', 'scsv')) ? $format : 'json';
+        $this->client->stream($callable,"executions/$executionId/result?format=$format");
     }
 
     /**

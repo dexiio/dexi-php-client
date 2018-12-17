@@ -195,6 +195,22 @@ class Runs {
     }
 
     /**
+     * Stream the result from the latest execution of the given run.
+     *
+     * @param callable $callable
+     * @param string $runId
+     * @param string $format Specify the format you want the output to be in. Valid values are json, csv, xml and scsv.
+     * @param string $state State of the execution. Valid values are null, QUEUED, PENDING, RUNNING, FAILED, STOPPED and OK
+     * @return void
+     * @throws Exception\RequestException
+     */
+    public function streamLatestResult($callable, $runId, $format = 'json', $state = null) {
+        $format = in_array($format, array('json', 'xml', 'csv', 'scsv')) ? $format : 'json';
+        $state = in_array($state, array('QUEUED', 'PENDING', 'RUNNING', 'FAILED', 'STOPPED', 'OK')) ? $state : '';
+        $this->client->stream($callable, "runs/$runId/latest/result?format=$format&state=$state");
+    }
+
+    /**
      * Get executions for the given run.
      *
      * @param string $runId
