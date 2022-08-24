@@ -1,6 +1,6 @@
 <?php
 
-namespace Dexi;
+namespace Dexi\DTO;
 
 
 class DataSetRowSetDTO {
